@@ -8,6 +8,8 @@ import Signup from '../screens/Signup';
 import {StatusBar} from 'react-native';
 import Function from '../screens/Function';
 import CustomFunction from '../screens/CustomFunction';
+import ChatPDFSettings from '../screens/ChatPDFSettings';
+import EmailSettings from '../screens/EmailSettings';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +25,8 @@ export default function Navigation() {
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Function" component={Function} />
           <Stack.Screen name="CustomFunction" component={CustomFunction} />
+          <Stack.Screen name="ChatPDFSettings" component={ChatPDFSettings} />
+          <Stack.Screen name="EmailSettings" component={EmailSettings} />
         </Stack.Navigator>
       ) : (
         <Stack.Navigator

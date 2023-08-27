@@ -1,4 +1,4 @@
-import {Pressable, ScrollView, StyleSheet, View} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, View, Image} from 'react-native';
 import Text from '../components/Text';
 import {fonts} from '../resources';
 import TextInput from '../components/TextInput';
@@ -8,7 +8,6 @@ import Button from '../components/Button';
 import {useEffect, useState} from 'react';
 import {signup} from '../services/auth.service';
 import DatePicker from 'react-native-date-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch} from 'react-redux';
 import {setIsSign} from '../store/features/auth/authSlice';
 import {storeString} from '../shared/LocalStorage';
@@ -59,7 +58,6 @@ export default function Signup({navigation}: any) {
 
     try {
       const result = await signup({name, email, birthday, password});
-      console.log(result);
       //Save token on localstorage
       await storeString('authToken', result.authToken);
       dispatch(setIsSign(true));
@@ -77,6 +75,11 @@ export default function Signup({navigation}: any) {
 
   return (
     <ScrollView style={styles.layout}>
+      <Image
+        source={require('../resources/images/logo/wo-bg-variant.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
       <Text style={styles.greeting}>Bienvenido a B-MO Companion</Text>
       <Text>Registrate para obtener acceso a todas las funciones!</Text>
       <View style={styles.form}>
@@ -192,5 +195,10 @@ const styles = StyleSheet.create({
     color: 'grey',
     fontFamily: fonts.regular,
     fontSize: 12,
+  },
+  logo: {
+    width: '50%',
+    height: 200,
+    alignSelf: 'center',
   },
 });

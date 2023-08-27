@@ -4,14 +4,24 @@ export const userSlice = createSlice({
   name: 'user',
   initialState: {
     user: null,
+    settings: null,
+    contacts: null,
   },
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
     },
+    setSettings: (state, action) => {
+      state.settings = action.payload;
+    },
+    setContacts: (state, action) => {
+      state.contacts = action.payload;
+    },
   },
 });
 
-export const {setUser} = userSlice.actions;
+export const {setUser, setSettings, setContacts} = userSlice.actions;
 export const selectUser = (state: any) => state.user.user;
+export const selectSettings = (state: any) => state.user.settings;
+export const selectContacts = (state: any) => state.user.contacts;
 export default userSlice.reducer;

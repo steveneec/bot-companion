@@ -2,86 +2,13 @@ import {Pressable, ScrollView, StatusBar, StyleSheet, View} from 'react-native';
 import Text from '../components/Text';
 import {useSelector} from 'react-redux';
 import {selectUser} from '../store/features/user/userSlice';
-import {fonts} from '../resources';
+import {fonts, mainOptions} from '../resources';
 import Card from '../components/Card';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import {funcType} from '../types';
 
 export default function Home({navigation}: any) {
   const user = useSelector(selectUser);
-
-  const functions: funcType[] = [
-    {
-      _id: '__',
-      action: 'Reproduce musica',
-      description: 'Reproduce musica con B-MO facilmente',
-      command: 'Di "Reproduce" seguido de la cancion o artista',
-      example: 'Reproduce Tranky Funky de Trueno',
-      icon: 'musical-notes-outline',
-      color: '#5C4B99',
-      goTo: 'Function',
-    },
-    {
-      _id: '__',
-      action: 'Reproduce videos',
-      description: 'Reproduce videos de YouTube',
-      command: 'Di "Pon", "Video" seguido del nombre del video que quieres ver',
-      example: 'Video graciosos de gatos',
-      icon: 'play-circle-outline',
-      color: '#EA1179',
-      goTo: 'Function',
-    },
-    {
-      _id: '__',
-      action: 'Preguntale a Chat GPT',
-      description: 'Usa Chat GPT para resolver cualquier problema',
-      command: 'Di "Usa GPT" seguido de lo que quieras consultarle',
-      example: 'Usa GPT y dame una lista de 10 peliculas de terror',
-      icon: 'chatbox-ellipses-outline',
-      color: '#22A699',
-      goTo: 'Function',
-    },
-    {
-      _id: '__',
-      action: 'Busca en internet',
-      description: '',
-      command: '',
-      example: '',
-      icon: 'earth-outline',
-      color: '#F79327',
-      goTo: 'Function',
-    },
-    {
-      _id: '__',
-      action: 'Preguntas de un texto o PDF',
-      description: '',
-      command: '',
-      example: '',
-      icon: 'reader-outline',
-      color: '#0B2447',
-      goTo: 'Function',
-    },
-    {
-      _id: '__',
-      action: 'Consulta el clima',
-      description: '',
-      command: '',
-      example: '',
-      icon: 'rainy-outline',
-      color: '#19A7CE',
-      goTo: 'Function',
-    },
-    {
-      _id: '__',
-      action: 'Envia mensajes por whatsapp',
-      description: '',
-      command: '',
-      example: '',
-      icon: 'logo-whatsapp',
-      color: '#03C988',
-      goTo: 'Function',
-    },
-  ];
 
   const myFunctions = [
     {
@@ -105,7 +32,7 @@ export default function Home({navigation}: any) {
           title="Funciones"
           description="Conoce las funciones que B-MO tiene para ti">
           <View>
-            {functions.map((func, key) => (
+            {mainOptions.map((func, key) => (
               <ActionRow key={key} func={func} navigation={navigation} />
             ))}
           </View>
@@ -118,13 +45,12 @@ export default function Home({navigation}: any) {
   );
 }
 
-function ActionRow(params: {key: number; navigation: any; func: funcType}) {
+function ActionRow(params: {navigation: any; func: funcType}) {
   return (
     <Pressable
       onPress={() =>
-        params.navigation.push(params.func.goTo, {id: params.func._id})
+        params.navigation.push(params.func.goTo, {fn: params.func})
       }
-      key={params.key}
       style={({pressed}) =>
         pressed
           ? [styles.optionFunction, styles.optionFunctionPressed]

@@ -2,8 +2,12 @@ import {PropsWithChildren, createContext, useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {loadString} from '../shared/LocalStorage';
 import {setIsSign} from '../store/features/auth/authSlice';
-import {getUser} from '../services/user.service';
-import {setUser} from '../store/features/user/userSlice';
+import {getAllContacts, getSettings, getUser} from '../services/user.service';
+import {
+  setContacts,
+  setSettings,
+  setUser,
+} from '../store/features/user/userSlice';
 
 const AppContext = createContext({});
 
@@ -17,11 +21,22 @@ export function AppContextProvider(props: PropsWithChildren) {
 
   async function loadToken() {
     const token = await loadString('authToken');
+
     if (token) {
-      const user = await getUser(token);
-      dispatch(setUser(user));
-      dispatch(setIsSign(true));
+      const responses = await Promise.all([
+        getUser(token),
+        getSettings(token),
+        getAllContacts(token),
+      ]);
+
+      if (responses[0]) {
+        dispatch(setUser(responses[0]));
+        dispatch(setIsSign(true));
+        dispatch(setSettings(responses[1]));
+        dispatch(setContacts(responses[2]));
+      }
     }
+
     setReady(true);
   }
 

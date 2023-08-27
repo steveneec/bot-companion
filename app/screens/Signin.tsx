@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {Image, SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 import Text from '../components/Text';
 import {fonts} from '../resources';
 import TextInput from '../components/TextInput';
@@ -6,53 +6,93 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Button from '../components/Button';
 import {useState} from 'react';
+import {signin} from '../services/auth.service';
+import {storeString} from '../shared/LocalStorage';
+import {setIsSign} from '../store/features/auth/authSlice';
+import {useDispatch} from 'react-redux';
+import {
+  setContacts,
+  setSettings,
+  setUser,
+} from '../store/features/user/userSlice';
+import {getAllContacts, getSettings, getUser} from '../services/user.service';
 
 export default function Signin({navigation}: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const dispatch = useDispatch();
+
+  async function handleOnContinue() {
+    try {
+      const result = await signin({email, password});
+      await storeString('authToken', result.authToken);
+
+      const responses = await Promise.all([
+        getUser(result.authToken),
+        getSettings(result.authToken),
+        getAllContacts(result.authToken),
+      ]);
+      dispatch(setUser(responses[0]));
+      dispatch(setIsSign(true));
+      dispatch(setSettings(responses[1]));
+      dispatch(setContacts(responses[2]));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
-    <View style={styles.layout}>
-      <Text style={styles.greeting}>Bienvenido a B-MO Companion</Text>
-      <Text>
-        Gestiona las configuraciones y accede a nuevas funciones para B-MO desde
-        tu celular
-      </Text>
-      <View style={styles.form}>
-        <TextInput
-          label="Ingresa tu e-mail"
-          placeholder="e-mail"
-          inputMode="email"
-          icon={<MaterialIcon name="alternate-email" size={18} color="grey" />}
-          value={email}
-          onChangeText={setEmail}
+    <SafeAreaView>
+      <ScrollView contentContainerStyle={styles.layout}>
+        <Image
+          source={require('../resources/images/logo/wo-bg-variant.png')}
+          style={styles.logo}
+          resizeMode="contain"
         />
-        <TextInput
-          label="Ingresa tu contrasena"
-          placeholder="password"
-          secureTextEntry
-          icon={<Octicons name="key-asterisk" size={18} color="grey" />}
-          value={password}
-          onChangeText={setPassword}
-        />
-        <Button
-          style={{marginTop: 20}}
-          title="Continuar"
-          icon={<Octicons name="chevron-right" size={24} color="white" />}
-          onPress={() => {}}
-        />
-      </View>
-      <View style={styles.noAccount}>
+        <Text style={styles.greeting}>Bienvenido a B-MO Companion</Text>
         <Text>
-          Aun no tienes una cuenta?{' '}
-          <Text
-            style={styles.createAccount}
-            onPress={() => navigation.replace('Signup')}>
-            Crear una.
-          </Text>
+          Gestiona las configuraciones y accede a nuevas funciones para BMO
+          PetBot desde tu celular
         </Text>
-      </View>
-    </View>
+        <View style={styles.form}>
+          <TextInput
+            label="Ingresa tu e-mail"
+            placeholder="e-mail"
+            inputMode="email"
+            icon={
+              <MaterialIcon name="alternate-email" size={18} color="grey" />
+            }
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            label="Ingresa tu contrasena"
+            placeholder="password"
+            secureTextEntry
+            icon={<Octicons name="key-asterisk" size={18} color="grey" />}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <Button
+            style={{marginTop: 20}}
+            title="Continuar"
+            icon={<Octicons name="chevron-right" size={24} color="white" />}
+            onPress={handleOnContinue}
+          />
+        </View>
+        <View style={styles.noAccount}>
+          <Text>
+            Aun no tienes una cuenta?{' '}
+            <Text
+              style={styles.createAccount}
+              onPress={() => navigation.replace('Signup')}>
+              Crear una.
+            </Text>
+          </Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -76,5 +116,10 @@ const styles = StyleSheet.create({
   },
   noAccount: {
     alignItems: 'center',
+  },
+  logo: {
+    width: '50%',
+    height: 200,
+    alignSelf: 'center',
   },
 });

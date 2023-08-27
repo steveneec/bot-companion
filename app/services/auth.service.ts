@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {apiBase} from '../resources';
 
-export async function signin() {
-  const response = await axios.post(`${apiBase}/auth/signin`, {});
+export async function signin(params: {email: string; password: string}) {
+  const response = await axios.post(`${apiBase}/auth/signin`, params);
   return response.data;
 }
 
