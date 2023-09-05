@@ -22,6 +22,8 @@ export const colors = [
 
 export const apiBase = 'http://192.168.100.21:3000';
 
+export const chatPDFApiKey = 'sec_EZDFpbrsSZ3v6WwwG0qo2ggCz3D6nHrj';
+
 export const mainOptions: funcType[] = [
   {
     _id: 'playMusic',

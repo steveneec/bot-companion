@@ -1,4 +1,10 @@
-import {PropsWithChildren, createContext, useEffect, useState} from 'react';
+import {
+  PropsWithChildren,
+  createContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {useDispatch} from 'react-redux';
 import {loadString} from '../shared/LocalStorage';
 import {setIsSign} from '../store/features/auth/authSlice';
@@ -6,10 +12,12 @@ import {getAllContacts, getSettings, getUser} from '../services/user.service';
 import {
   setContacts,
   setSettings,
+  setToken,
   setUser,
 } from '../store/features/user/userSlice';
+import Toast from 'react-native-toast-message';
 
-const AppContext = createContext({});
+export const AppContext = createContext<any>({showToast: () => {}});
 
 export function AppContextProvider(props: PropsWithChildren) {
   const dispatch = useDispatch();
@@ -19,10 +27,15 @@ export function AppContextProvider(props: PropsWithChildren) {
     loadToken();
   }, []);
 
+  function showToast(props: {type: string; text1: string; text2: string}) {
+    Toast.show({type: props.type, text1: props.text1, text2: props.text2});
+  }
+
   async function loadToken() {
     const token = await loadString('authToken');
 
     if (token) {
+      dispatch(setToken(token));
       const responses = await Promise.all([
         getUser(token),
         getSettings(token),
@@ -44,5 +57,10 @@ export function AppContextProvider(props: PropsWithChildren) {
     return null;
   }
 
-  return <AppContext.Provider value={{}}>{props.children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={{showToast}}>
+      {props.children}
+      <Toast />
+    </AppContext.Provider>
+  );
 }

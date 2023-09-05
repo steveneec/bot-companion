@@ -22,8 +22,10 @@ export default function Home({navigation}: any) {
   return (
     <ScrollView contentContainerStyle={{padding: 20}}>
       <View style={styles.header}>
-        <Text style={styles.greeting}>Hola 👋, {user.name}</Text>
-        <Pressable style={styles.settings}>
+        <Text style={styles.greeting}>Hola 👋, {user && user.name}</Text>
+        <Pressable
+          style={styles.settings}
+          onPress={() => navigation.push('Settings')}>
           <IonIcon name="settings-outline" size={24} color="grey" />
         </Pressable>
       </View>
@@ -45,7 +47,7 @@ export default function Home({navigation}: any) {
   );
 }
 
-function ActionRow(params: {navigation: any; func: funcType}) {
+export function ActionRow(params: {navigation: any; func: funcType}) {
   return (
     <Pressable
       onPress={() =>

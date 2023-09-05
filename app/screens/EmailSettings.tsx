@@ -50,7 +50,7 @@ export default function EmailSettings({navigation}: any) {
             )}
             <Pressable
               style={styles.openSettings}
-              onPress={() => navigation.push('EditSettings')}>
+              onPress={() => navigation.push('EditCredentials')}>
               <Text style={styles.openSettingsText}>Editar credenciales</Text>
               <FeatherIcon name="external-link" size={24} color="#d81b60" />
             </Pressable>

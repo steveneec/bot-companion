@@ -17,3 +17,13 @@ export async function loadString(key: string) {
     return null;
   }
 }
+
+export async function removeKey(key: string) {
+  try {
+    const value = await AsyncStorage.removeItem(key);
+    return value;
+  } catch (error) {
+    console.log(error);
+    return -1;
+  }
+}

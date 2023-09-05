@@ -10,6 +10,9 @@ import Function from '../screens/Function';
 import CustomFunction from '../screens/CustomFunction';
 import ChatPDFSettings from '../screens/ChatPDFSettings';
 import EmailSettings from '../screens/EmailSettings';
+import AddContact from '../screens/AddContact';
+import EditCredentials from '../screens/EditCredentials';
+import Settings from '../screens/Settings';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +30,9 @@ export default function Navigation() {
           <Stack.Screen name="CustomFunction" component={CustomFunction} />
           <Stack.Screen name="ChatPDFSettings" component={ChatPDFSettings} />
           <Stack.Screen name="EmailSettings" component={EmailSettings} />
+          <Stack.Screen name="AddContact" component={AddContact} />
+          <Stack.Screen name="EditCredentials" component={EditCredentials} />
+          <Stack.Screen name="Settings" component={Settings} />
         </Stack.Navigator>
       ) : (
         <Stack.Navigator

@@ -6,11 +6,11 @@ import {fonts} from '../resources';
 export default function Button(props: props) {
   return (
     <Pressable
-      disabled={props.isBusy}
+      disabled={props.isBusy || props.disabled}
       onPress={() => props.onPress()}
       style={({pressed}) =>
         !pressed
-          ? props.isBusy
+          ? props.isBusy || props.disabled
             ? [{...styles.button, ...props.style, ...styles.buttonDisabled}]
             : [{...styles.button, ...props.style}]
           : [{...styles.button, ...props.style, ...styles.buttonPressed}]
@@ -27,6 +27,7 @@ interface props {
   style?: ViewStyle;
   onPress: Function;
   isBusy?: boolean;
+  disabled?: boolean;
 }
 
 const styles = StyleSheet.create({

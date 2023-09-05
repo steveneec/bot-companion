@@ -5,12 +5,13 @@ import TextInput from '../components/TextInput';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Button from '../components/Button';
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {signup} from '../services/auth.service';
 import DatePicker from 'react-native-date-picker';
 import {useDispatch} from 'react-redux';
 import {setIsSign} from '../store/features/auth/authSlice';
 import {storeString} from '../shared/LocalStorage';
+import {AppContext} from '../context/AppContext';
 
 export default function Signup({navigation}: any) {
   const [email, setEmail] = useState('');
@@ -23,6 +24,10 @@ export default function Signup({navigation}: any) {
   const [repPasswordError, setRepPasswordError] = useState(false);
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
+  const [isBusy, setIsBusy] = useState(false);
+  const [disabled, setIsDisabled] = useState(true);
+
+  const {showToast} = useContext(AppContext);
 
   const dispatch = useDispatch();
 
@@ -36,18 +41,22 @@ export default function Signup({navigation}: any) {
   async function handleOnContinue() {
     if (name.length < 3) {
       setNameError(true);
+      return;
     }
 
     if (email === '' || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(email)) {
       setEmailError(true);
+      return;
     }
 
     if (password.length < 8) {
       setPasswordError(true);
+      return;
     }
 
     if (repeatPassword.length < 8) {
       setRepPasswordError(true);
+      return;
     }
 
     if (!checkPassword()) {
@@ -60,9 +69,21 @@ export default function Signup({navigation}: any) {
       const result = await signup({name, email, birthday, password});
       //Save token on localstorage
       await storeString('authToken', result.authToken);
+
+      showToast({
+        type: 'success',
+        text1: 'Genial',
+        text2: 'Bienvenido 😎!',
+      });
+
       dispatch(setIsSign(true));
     } catch (error) {
       console.log(error);
+      showToast({
+        type: 'error',
+        text1: 'Ocurrió un error',
+        text2: 'No pudimos crear tu cuenta, inténtalo nuevamente 😖',
+      });
     }
   }
 
@@ -71,6 +92,17 @@ export default function Signup({navigation}: any) {
     setEmailError(false);
     setPasswordError(false);
     setRepPasswordError(false);
+
+    if (
+      name === '' ||
+      email === '' ||
+      password === '' ||
+      repeatPassword === ''
+    ) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
+    }
   }, [name, email, password, repeatPassword]);
 
   return (
@@ -145,6 +177,8 @@ export default function Signup({navigation}: any) {
           title="Continuar"
           icon={<Octicons name="chevron-right" size={24} color="white" />}
           onPress={() => handleOnContinue()}
+          disabled={disabled}
+          isBusy={isBusy}
         />
       </View>
       <View style={styles.noAccount}>

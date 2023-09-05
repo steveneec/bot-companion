@@ -6,6 +6,7 @@ export const userSlice = createSlice({
     user: null,
     settings: null,
     contacts: null,
+    token: null,
   },
   reducers: {
     setUser: (state, action) => {
@@ -17,11 +18,15 @@ export const userSlice = createSlice({
     setContacts: (state, action) => {
       state.contacts = action.payload;
     },
+    setToken: (state, action) => {
+      state.token = action.payload;
+    },
   },
 });
 
-export const {setUser, setSettings, setContacts} = userSlice.actions;
+export const {setUser, setSettings, setContacts, setToken} = userSlice.actions;
 export const selectUser = (state: any) => state.user.user;
 export const selectSettings = (state: any) => state.user.settings;
 export const selectContacts = (state: any) => state.user.contacts;
+export const selectToken = (state: any) => state.user.token;
 export default userSlice.reducer;
